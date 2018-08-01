@@ -13,29 +13,17 @@
 # # test session
 # filename = "images/starry_night.jpg"
 
-# # load image and save as JpegImageFile
-# img = load_img(filename)
-
-# # transfer JpegImageFile into ndarray, which is multidimensional, fixed size array object
-# img = img_to_array(img)
-
-# # reshapl 3-dimension img into 4-dimension img (the first dimension represent the number of samples), equivalent as img = img.reshape(1, img.shape[0], img.shape[1], img.shape[2])
-# img = np.expand_dims(img, axis=0)
-# # preprocess image so as to be compatible
-# np_img = preprocess_input(img)
-
 from __future__ import print_function
-# from keras.preprocessing.image import load_img, save_img, img_to_array
+import tensorflow as tf
+from keras import backend as K
 from keras.applications.vgg19 import VGG19, preprocess_input
 from keras.preprocessing.image import load_img, save_img, img_to_array
 import numpy as np
-from scipy.optimize import fmin_l_bfgs_b
-import time
+from scipy.optimize import fmin_l_bfgs_b # ?
+import time # ?
+
 import argparse
 
-from keras.applications import vgg19
-from keras import backend as K
-import argparse
 parser = argparse.ArgumentParser(description="Neural style transfer")
 parser.add_argument('base_image_path', metavar='base', type=str,
                     help='Path to the image to transform.')
@@ -71,12 +59,11 @@ img_ncols = int(width * img_nrows / height)
 
 # util function to open, resize and format pictures into appropriate tensors
 
-
 def preprocess_image(image_path):
   # load image and save as JpegImageFile
-  img = load_img(image_path, target_size=(img_nrows, img_ncols))
+  img = load_img(image_path, target_size = (img_nrows, img_ncols))
 
-  # transfer JpegImageFile into ndarray, which is multidimensional, fixed size array object
+  # transfer JpegImageFile into ndarray, which is a multidimensional, fixed size array object
   img = img_to_array(img)
 
   # reshapl 3-dimension img into 4-dimension img (by add a dimension before other original dims)
@@ -87,11 +74,11 @@ def preprocess_image(image_path):
 
 # util function to convert a tensor into a valid image
 
-
 def deprocess_image(x):
     if K.image_data_format() == 'channels_first':
         x = x.reshape((3, img_nrows, img_ncols))
         x = x.transpose((1, 2, 0))
+        # x = K.permute_dimensions(x, (1, 2, 0))
     else:
         x = x.reshape((img_nrows, img_ncols, 3))
     # Remove zero-center by mean pixel
@@ -104,7 +91,6 @@ def deprocess_image(x):
     return x
 
 # get tensor representations of our images
-print (base_image_path)
 base_image = K.variable(preprocess_image(base_image_path))
 style_reference_image = K.variable(preprocess_image(style_reference_image_path))
 
@@ -118,10 +104,10 @@ else:
 input_tensor = K.concatenate([base_image,
                               style_reference_image,
                               combination_image], axis=0)
-
+print(input_tensor.shape) # [3, 400, 533, 3]
 # build the VGG16 network with our 3 images as input
 # the model will be loaded with pre-trained ImageNet weights
-model = vgg19.VGG19(input_tensor=input_tensor,
+model = VGG19(input_tensor=input_tensor,
                     weights='imagenet', include_top=False)
 print('Model loaded.')
 
@@ -142,13 +128,6 @@ def gram_matrix(x):
         features = K.batch_flatten(K.permute_dimensions(x, (2, 0, 1)))
     gram = K.dot(features, K.transpose(features))
     return gram
-
-# the "style loss" is designed to maintain
-# the style of the reference image in the generated image.
-# It is based on the gram matrices (which capture style) of
-# feature maps from the style reference image
-# and from the generated image
-
 
 def style_loss(style, combination):
     assert K.ndim(style) == 3
@@ -266,16 +245,13 @@ for i in range(iterations):
                                      fprime=evaluator.grads, maxfun=20)
     print('Current loss value:', min_val)
     # save current generated image
+    # x is ndarray
     img = deprocess_image(x.copy())
     fname = result_prefix + '_at_iteration_%d.png' % i
     save_img(fname, img)
     end_time = time.time()
     print('Image saved as', fname)
     print('Iteration %d completed in %ds' % (i, end_time - start_time))
-
-
-
-
 
 # print(model.summary())
 
