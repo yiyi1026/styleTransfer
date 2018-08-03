@@ -1,7 +1,8 @@
 import numpy as np
 import tensorflow as tf
 from keras import backend as K
-from keras.applications.vgg19 import VGG19
+from keras.applications.vgg19 import VGG19, preprocess_input
+from keras.preprocessing.image import load_img, save_img, img_to_array
 import argparse
 
 # arguments preparation
@@ -13,16 +14,67 @@ parser.add_argument('style_img_path', metavar='style', type=str, help='path to s
 parser.add_argument('generated_prefix', metavar='gen_prefix', type=str, help='prefix for generated results')
 
 # optional arguments
-parse.add_argument("content_weight", type=float, default=0.02, require=False, help="Content Weight")
-parse.add_argument("style_weight", type=float, default=0.02, require=False, help="Style Weight")
-parse.add_argument("tv_weight", type=float, default=0.02, require=False, help="Total Variation Weight")
+parser.add_argument("--content_weight", type=float, default=0.02, required=False, help="Content Weight")
+parser.add_argument("--style_weight", type=float, default=1, required=False, help="Style Weight")
+parser.add_argument("--tv_weight", type=float, default=1, required=False, help="Total Variation Weight")
+parser.add_argument("--iter", type=int, default=10, required=False, help="Number of Iteration")
 
-
+# fetch arguments
 args = parser.parse_args()
-# print("here are the args")
+
+# fetch required arguments
 content_img_path = args.content_img_path
 style_img_path = args.style_img_path
 generated_prefix = args.generated_prefix
+
+# fetch optional arguments
+content_weight = args.content_weight
+style_weight = args.style_weight
+tv_weight = args.tv_weight
+iter = args.iter
+
+
+width, height = load_img(content_img_path).size
+img_rows = 500
+img_cols = int(width * img_rows / height)
+
+# test
+# print(args)
+
+def preprocess_img(img_path):
+  # load image as JpegImageFile
+  img = load_img(img_path, target_size = (img_rows, img_cols))
+  # convert JpegImageFile into ndarray(a multidimensional, fixed size array object)
+  img = img_to_array(img)
+
+  # reshape 3-dimension img into 4-dimension img (by add a dimension upfront)
+  img = np.expand_dims(img, axis=0)
+  # preprocess image so as to be compatible for keras
+  np_img = preprocess_input(img)
+  return np_img
+
+def deprocess_img(np_img):
+  np_img = np_img.reshape((img_rows, img_cols, 3))
+
+  # add back testing-mean-pixel (due to default manipulation in openCV from Caffe of Keras)
+  np_img[:, :, 0] += 103.939
+  np_img[:, :, 1] += 116.779
+  np_img[:, :, 2] += 123.68
+
+  # BGR to RGB(due to default manipulation in openCV from Caffe of Keras)
+  np_img = np_img[:, :, ::-1]
+  img = np.clip(np_img, 0, 255).astype('uint8')
+  return img
+
+# get tensor representations of input images
+content_img = K.variable(preprocess_img(content_img_path))
+style_img = K.variable(preprocess_img(style_img_path))
+
+name = 'name'
+i = 0
+prefix = name + '_at_iteration_%d.png' % i
+# save_img(prefix, deprocess_img(np_img))
+# img.show
 
 
 
