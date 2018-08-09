@@ -3,7 +3,8 @@
 This is a Keras implementation of [A Neural Algorithm of Artistic Style](https://arxiv.org/abs/1508.06576) by Leon A. Gatys, Alexander S. Ecker and Matthias Bethge.
 
 ### Content image - sydney opera house
-![images_sydney](images/003sydney.jpg)
+![images_sydney|500x500,20%](images/003sydney.jpg)
+<!-- .element height="10%" width="10%" -->
 
 ### Style image - picasso
 ![images_picasso](images/style_picasso.jpg)
