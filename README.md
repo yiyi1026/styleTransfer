@@ -8,11 +8,11 @@ This is a Keras implementation of [A Neural Algorithm of Artistic Style](https:/
 ### Style image - Still Life Painting By Pablo Picasso
 ![images_picasso](images/style_picasso.jpg)
 
-### Output image
-![images_sydney_picasso_result](docs/demo/sydney_picasso_99.png)
-
 ### Transfer demo
 ![sydney_picasso_tranfer](docs/demo/slower_transfer.gif)
+
+### Output image
+![images_sydney_picasso_result](docs/demo/sydney_picasso_99.png)
 
 
 
@@ -26,6 +26,10 @@ This is a Keras implementation of [A Neural Algorithm of Artistic Style](https:/
   - content_weight
   - style_weight
   - iter
+
+  ```
+  python styletransfer.py --content_weight 0.015 --iter 1 images/003sydney.jpg images/style_picasso.jpg result_sydney_picasso
+  ```
 
 
 ## Dependencies
