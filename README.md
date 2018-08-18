@@ -19,7 +19,7 @@ This is a Keras implementation of [A Neural Algorithm of Artistic Style](https:/
 ## Implementation
   basic usage:
   ```
-  python styletransfer.py images/003sydney.jpg images/style_picasso.jpg result_sydney_picasso
+  python styletransfer.py path_to_content_image.jpg path_to_style_image.jpg prefix_for_result
   ```
 
   options:
@@ -28,7 +28,7 @@ This is a Keras implementation of [A Neural Algorithm of Artistic Style](https:/
   - iter
 
   ```
-  python styletransfer.py --content_weight 0.015 --iter 1 images/003sydney.jpg images/style_picasso.jpg result_sydney_picasso
+  python styletransfer.py --content_weight 0.015 --iter 1 path_to_content_image.jpg path_to_style_image.jpg prefix_for_result
   ```
 
 
