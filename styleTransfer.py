@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
+# coding: utf-8
 # from google.colab import files
+
 # import os
-# work_dir = "/styleTransfer/"
+# work_dir = "styleTransfer/"
 # if os.getcwd() != work_dir:
 #   !git clone https://github.com/yiyi1026/styleTransfer.git
 # !git pull
-# !ls -lh
 
+# download result picture
 # !tar -cvzf xiaozhen_picasso.tar.gz xiaozhen*
 # !tar cvzf - ./xiaozhen_picasso* | split --bytes=20MB - xiaozhen_picasso.tar.gz.
 # !ls -lhg
@@ -15,12 +17,18 @@
 #   name = ('xiaozhen_picasso.tar.gz.a%c' % char)
 #   files.download(name)
 
-# os.chdir(work_dir)
-# !pip install --upgrade pip
-# !pip install --upgrade keras numpy
-# !ls
-# !ls images
-# !pwd
+os.chdir(work_dir)
+!pip install --upgrade pip
+!pip install --upgrade keras numpy
+
+# download result picture
+# !tar -cvzf xiaozhen_picasso.tar.gz xiaozhen*
+# !tar cvzf - ./xiaozhen_picasso* | split --bytes=20MB - xiaozhen_picasso.tar.gz.
+# !ls -lhg
+# for char in ['a','b','c','d','e']:
+#   name = ('xiaozhen_picasso.tar.gz.a%c' % char)
+#   files.download(name)
+
 
 # In[1]:
 
